@@ -1,17 +1,34 @@
-// build.ts
+import { build } from 'esbuild';
+import { defineConfig, build as viteBuild } from 'vite';
 
-import { defineConfig } from 'vite';
-import { resolve } from 'path';
-
-// Build script for Vite client and server-side code bundling
-export default defineConfig({
-  build: {
-    outDir: resolve(__dirname, 'dist'),
-    rollupOptions: {
-      input: {
-        client: resolve(__dirname, 'src/client/main.ts'),
-        server: resolve(__dirname, 'src/server/main.ts'),
+async function viteClientBuild() {
+  await viteBuild({
+    config: defineConfig({
+      // Vite configuration settings
+      build: {
+        outDir: 'dist/client',
       },
-    },
-  },
+    })
+  });
+}
+
+async function esbuildServerBundling() {
+  await build({
+    entryPoints: ['src/server/index.ts'], // Adjust according to your server entry point
+    bundle: true,
+    platform: 'node',
+    target: 'node14', // Specify your node version
+    outfile: 'dist/server/index.js',
+    format: 'cjs',
+  });
+}
+
+async function build() {
+  await viteClientBuild();
+  await esbuildServerBundling();
+}
+
+build().catch((err) => {
+  console.error(err);
+  process.exit(1);
 });
