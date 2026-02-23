@@ -1,12 +1,10 @@
 import { build as viteBuild } from 'vite';
 import { build as esbuildBuild } from 'esbuild';
 
-// Paths
 const clientRoot = './client';
 const serverEntry = './server/index.ts';
 const outputDir = './dist';
 
-// Vite build for client
 viteBuild({
     root: clientRoot,
     outDir: `${outputDir}/public`,
@@ -16,7 +14,6 @@ viteBuild({
     console.error('Error during the Vite build:', err);
 });
 
-// Esbuild build for server
 esbuildBuild({
     entryPoints: [serverEntry],
     bundle: true,
